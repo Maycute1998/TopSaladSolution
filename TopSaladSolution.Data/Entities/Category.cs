@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TopSaladSolution.Data.Enums;
+﻿using TopSaladSolution.Data.Enums;
 
 namespace TopSaladSolution.Data.Entities
 {
@@ -16,5 +11,7 @@ namespace TopSaladSolution.Data.Entities
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }
         public List<ProductInCategory> ProductInCategories { get; set; }
+        public List<CategoryTranslation> CategoryTranslations { get; set; }
+
     }
 }

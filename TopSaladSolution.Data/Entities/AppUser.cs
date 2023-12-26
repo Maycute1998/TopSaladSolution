@@ -1,6 +1,8 @@
-﻿namespace TopSaladSolution.Data.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace TopSaladSolution.Data.Entities
 {
-    public class AppUser
+    public class AppUser : IdentityUser<Guid>
     {
         public string FirstName { get; set; }
 

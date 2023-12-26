@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TopSaladSolution.Data.Entities
+﻿namespace TopSaladSolution.Data.Entities
 {
     public class Cart
     {
@@ -12,13 +6,10 @@ namespace TopSaladSolution.Data.Entities
         public int ProductId { set; get; }
         public int Quantity { set; get; }
         public decimal Price { set; get; }
+        public DateTime DateCreated { get; set; }
 
-        //public Guid UserId { get; set; }
-
-        //public Product Product { get; set; }
-
-        //public DateTime DateCreated { get; set; }
-
-        //public AppUser AppUser { get; set; }
+        public Guid UserId { get; set; }
+        public Product Product { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }

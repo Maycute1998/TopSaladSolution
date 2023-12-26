@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TopSaladSolution.Data.Enums;
+﻿using TopSaladSolution.Data.Enums;
 
 namespace TopSaladSolution.Data.Entities
 {
@@ -20,7 +15,8 @@ namespace TopSaladSolution.Data.Entities
 
         public List<ProductInCategory> ProductInCategories { get; set; }
         public List<OrderDetail> OrderDetails { set; get; }
-
-
+        public List<Cart> Carts { get; set; }
+        public List<ProductTranslation> ProductTranslations { get; set; }
+        public List<ProductImage> ProductImages { get; set; }
     }
 }

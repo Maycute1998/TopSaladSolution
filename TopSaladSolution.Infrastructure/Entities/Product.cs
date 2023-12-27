@@ -1,4 +1,6 @@
-﻿namespace TopSaladSolution.Infrastructure.Entities
+﻿using System.Collections.Generic;
+
+namespace TopSaladSolution.Infrastructure.Entities
 {
     public class Product : BaseEntity
     {

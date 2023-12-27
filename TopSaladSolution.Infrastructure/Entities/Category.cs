@@ -1,4 +1,4 @@
-﻿using TopSaladSolution.Infrastructure.Enums;
+﻿using System.Collections.Generic;
 
 namespace TopSaladSolution.Infrastructure.Entities
 {

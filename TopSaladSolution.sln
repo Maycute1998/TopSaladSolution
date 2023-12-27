@@ -5,11 +5,9 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopSaladSolution.WepApp", "TopSaladSolution.WepApp\TopSaladSolution.WepApp.csproj", "{B70330F5-626F-4F70-BB0F-842F73FCAB36}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopSaladSolution.Infrastructure", "TopSaladSolution.Data\TopSaladSolution.Infrastructure.csproj", "{26B50FBE-B83B-4321-8256-0526185220AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopSaladSolution.Infrastructure", "TopSaladSolution.Infrastructure\TopSaladSolution.Infrastructure.csproj", "{26B50FBE-B83B-4321-8256-0526185220AD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopSaladSolution.Application", "TopSaladSolution.Application\TopSaladSolution.Application.csproj", "{04134BA9-7780-4C8C-BBE9-9A80D2B99964}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopSaladSolution.Domain", "TopSaladSolution.Infrastructure\TopSaladSolution.Domain.csproj", "{F9D16019-8F61-4BA4-8EBB-A3F4A9E251E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{04134BA9-7780-4C8C-BBE9-9A80D2B99964}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04134BA9-7780-4C8C-BBE9-9A80D2B99964}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04134BA9-7780-4C8C-BBE9-9A80D2B99964}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9D16019-8F61-4BA4-8EBB-A3F4A9E251E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9D16019-8F61-4BA4-8EBB-A3F4A9E251E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9D16019-8F61-4BA4-8EBB-A3F4A9E251E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9D16019-8F61-4BA4-8EBB-A3F4A9E251E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

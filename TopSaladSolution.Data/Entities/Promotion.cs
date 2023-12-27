@@ -7,10 +7,10 @@ using TopSaladSolution.Data.Enums;
 
 namespace TopSaladSolution.Data.Entities
 {
-    public class Promotion
+    public class Promotion : BaseEntity
     {
-        public int Id { set; get; }
-        public string Name { set; get; }
+        public string? Name { set; get; }
+        public string? Description { set; get; }
         public DateTime FromDate { set; get; }
         public DateTime ToDate { set; get; }
         public bool ApplyForAll { set; get; }

@@ -7,7 +7,7 @@ using TopSaladSolution.Data.Enums;
 
 namespace TopSaladSolution.Data.Entities
 {
-    public class OrderDetail
+    public class OrderDetail : BaseEntity
     {
         public int OrderId { set; get; }
         public int ProductId { set; get; }

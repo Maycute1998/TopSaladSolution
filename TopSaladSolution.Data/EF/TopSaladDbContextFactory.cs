@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TopSaladSolution.Data.EF
+namespace TopSaladSolution.Infrastructure.EF
 {
     public class TopSaladDbContextFactory : IDesignTimeDbContextFactory<TopSaladDbContext>
     {
@@ -17,7 +17,7 @@ namespace TopSaladSolution.Data.EF
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
-            
+
             var connectionString = configuration.GetConnectionString("TopSaladSolutionDb");
             var optionsBuilder = new DbContextOptionsBuilder<TopSaladDbContext>();
             optionsBuilder.UseSqlServer(connectionString);

@@ -1,6 +1,6 @@
-﻿namespace TopSaladSolution.Data.Entities
+﻿namespace TopSaladSolution.Infrastructure.Entities
 {
-    public class ProductImage: BaseEntity
+    public class ProductImage : BaseEntity
     {
         public int ProductId { get; set; }
         public string? ImagePath { get; set; }

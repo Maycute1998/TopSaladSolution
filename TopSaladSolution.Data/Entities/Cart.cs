@@ -1,4 +1,4 @@
-﻿namespace TopSaladSolution.Data.Entities
+﻿namespace TopSaladSolution.Infrastructure.Entities
 {
     public class Cart : BaseEntity
     {

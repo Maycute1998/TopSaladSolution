@@ -1,6 +1,6 @@
-﻿using TopSaladSolution.Data.Enums;
+﻿using TopSaladSolution.Infrastructure.Enums;
 
-namespace TopSaladSolution.Data.Entities
+namespace TopSaladSolution.Infrastructure.Entities
 {
     public class Category : BaseEntity
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TopSaladSolution.Data.Enums;
+using TopSaladSolution.Infrastructure.Enums;
 
-namespace TopSaladSolution.Data.Entities
+namespace TopSaladSolution.Infrastructure.Entities
 {
     public class Promotion : BaseEntity
     {

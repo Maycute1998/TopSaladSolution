@@ -1,6 +1,4 @@
-﻿using TopSaladSolution.Data.Enums;
-
-namespace TopSaladSolution.Data.Entities
+﻿namespace TopSaladSolution.Infrastructure.Entities
 {
     public class Product : BaseEntity
     {

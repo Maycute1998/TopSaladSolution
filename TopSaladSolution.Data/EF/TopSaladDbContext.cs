@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TopSaladSolution.Data.Configurations;
-using TopSaladSolution.Data.Entities;
+using TopSaladSolution.Infrastructure.Entities;
 
-namespace TopSaladSolution.Data.EF
+namespace TopSaladSolution.Infrastructure.EF
 {
     public class TopSaladDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
-        public TopSaladDbContext(DbContextOptions options) : base(options) 
+        public TopSaladDbContext(DbContextOptions options) : base(options)
         {
-           
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

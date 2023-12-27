@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TopSaladSolution.Data.EF;
+using TopSaladSolution.Infrastructure.EF;
 
 #nullable disable
 
@@ -125,7 +125,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("AppUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.AppConfig", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.AppConfig", b =>
                 {
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(450)");
@@ -139,7 +139,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("AppConfigs", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.AppRole", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.AppRole", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -164,7 +164,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("AppRoles", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.AppUser", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,7 +230,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("AppUsers", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Cart", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Cart", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -262,7 +262,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Carts", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Category", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -292,7 +292,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.CategoryTranslation", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.CategoryTranslation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -335,7 +335,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("CategoryTranslations", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Contact", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Contact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -370,7 +370,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Contacts", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Language", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Language", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -390,7 +390,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Languages", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Order", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -435,7 +435,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Orders", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.OrderDetail", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.OrderDetail", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -456,7 +456,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Product", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -494,7 +494,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Products", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.ProductImage", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductImage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -534,7 +534,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("ProductImages", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.ProductInCategory", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductInCategory", b =>
                 {
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -549,7 +549,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("ProductInCategory", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.ProductTranslation", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductTranslation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -592,7 +592,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("ProductTranslations", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Promotion", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Promotion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -635,7 +635,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Promotions", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Slide", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Slide", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -674,7 +674,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Slides", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Transaction", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -720,15 +720,15 @@ namespace TopSaladSolution.Data.Migrations
                     b.ToTable("Transactions", (string)null);
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Cart", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Cart", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.Product", "Product")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Product", "Product")
                         .WithMany("Carts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TopSaladSolution.Data.Entities.AppUser", "AppUser")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.AppUser", "AppUser")
                         .WithMany("Carts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -739,15 +739,15 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.CategoryTranslation", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.CategoryTranslation", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.Category", "Category")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Category", "Category")
                         .WithMany("CategoryTranslations")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TopSaladSolution.Data.Entities.Language", "Language")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Language", "Language")
                         .WithMany("CategoryTranslations")
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -758,9 +758,9 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("Language");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Order", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Order", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.AppUser", "AppUser")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.AppUser", "AppUser")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -769,15 +769,15 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.OrderDetail", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.OrderDetail", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.Order", "Order")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TopSaladSolution.Data.Entities.Product", "Product")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Product", "Product")
                         .WithMany("OrderDetails")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -788,9 +788,9 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.ProductImage", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductImage", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.Product", "Product")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Product", "Product")
                         .WithMany("ProductImages")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -799,15 +799,15 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.ProductInCategory", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductInCategory", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.Category", "Category")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Category", "Category")
                         .WithMany("ProductInCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TopSaladSolution.Data.Entities.Product", "Product")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Product", "Product")
                         .WithMany("ProductInCategories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -818,15 +818,15 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.ProductTranslation", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductTranslation", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.Language", "Language")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Language", "Language")
                         .WithMany("ProductTranslations")
                         .HasForeignKey("LanguageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TopSaladSolution.Data.Entities.Product", "Product")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Product", "Product")
                         .WithMany("ProductTranslations")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -837,9 +837,9 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Transaction", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Transaction", b =>
                 {
-                    b.HasOne("TopSaladSolution.Data.Entities.AppUser", "AppUser")
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.AppUser", "AppUser")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -848,7 +848,7 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.AppUser", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.AppUser", b =>
                 {
                     b.Navigation("Carts");
 
@@ -857,26 +857,26 @@ namespace TopSaladSolution.Data.Migrations
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Category", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Category", b =>
                 {
                     b.Navigation("CategoryTranslations");
 
                     b.Navigation("ProductInCategories");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Language", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Language", b =>
                 {
                     b.Navigation("CategoryTranslations");
 
                     b.Navigation("ProductTranslations");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Order", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
                 });
 
-            modelBuilder.Entity("TopSaladSolution.Data.Entities.Product", b =>
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Product", b =>
                 {
                     b.Navigation("Carts");
 

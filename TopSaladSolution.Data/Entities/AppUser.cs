@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace TopSaladSolution.Data.Entities
+namespace TopSaladSolution.Infrastructure.Entities
 {
     public class AppUser : IdentityUser<Guid>
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace TopSaladSolution.Data.Entities
+namespace TopSaladSolution.Infrastructure.Entities
 {
     public class Transaction : BaseEntity
     {

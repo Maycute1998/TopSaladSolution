@@ -9,6 +9,8 @@ namespace TopSaladSolution.Common.Helper
         public ApplicationMapper() 
         {
             CreateMap<Product, ProductVM>().ReverseMap();
+            CreateMap<Product, ProductCreateRequest>().ReverseMap();
+            CreateMap<Product, ProductEditRequest>().ReverseMap();
         }
         
     }

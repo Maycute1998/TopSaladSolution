@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
@@ -22,7 +23,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 
-builder.Services.AddDbContext<TopSaladDbContext>(options =>
+builder.Services.AddDbContext<DbContext, TopSaladDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TopSaladSolutionDb")));
 
 

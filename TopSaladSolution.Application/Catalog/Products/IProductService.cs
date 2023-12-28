@@ -9,10 +9,6 @@ namespace TopSaladSolution.Application.Catalog.Products
 {
     public interface IProductService
     {
-        int Create(ProductCreateRequest request);
-        int Update(ProductEditRequest request);
-        int Delete(int productId);
-        List<ProductVM> GetAll(); 
-        List<ProductVM> GetAllPaging(string keyword, int pageIndex, int pageSize);
+       
     }
 }

@@ -9,7 +9,7 @@ namespace TopSaladSolution.Infrastructure.EF
 {
     public class TopSaladDbContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
-        public TopSaladDbContext(DbContextOptions options) : base(options)
+        public TopSaladDbContext(DbContextOptions<TopSaladDbContext> options) : base(options)
         {
 
         }

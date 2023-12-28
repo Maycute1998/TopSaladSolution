@@ -10,6 +10,7 @@ namespace TopSaladSolution.Service.Profiles
         {
             CreateMap<Product,ProductCreateRequest>().ReverseMap();
             CreateMap<Product, ProductEditRequest>().ReverseMap();
+            CreateMap<Product, ProductVM>().ReverseMap();
         }
     }
 }

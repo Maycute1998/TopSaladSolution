@@ -12,10 +12,10 @@ namespace TopSaladSolution.Infrastructure.Entities
 
         public DateTime Dob { get; set; }
 
-        public List<Cart> Carts { get; set; }
+        public ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-        public List<Order> Orders { get; set; }
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
 
-        public List<Transaction> Transactions { get; set; }
+        public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     }
 }

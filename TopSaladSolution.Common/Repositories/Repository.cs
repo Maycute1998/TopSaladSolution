@@ -59,5 +59,15 @@ namespace TopSaladSolution.Common.Repositories
             _dbSet.Update(entity);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task SoftDelete(T entity)
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity");
+            }
+            _dbSet.Update(entity);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

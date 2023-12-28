@@ -11,6 +11,7 @@ using TopSaladSolution.Common.Repositories;
 using TopSaladSolution.Infrastructure.Entities;
 using TopSaladSolution.Interface;
 using TopSaladSolution.Model.Products;
+using TopSaladSolution.Common.Constant;
 
 namespace TopSaladSolution.Service
 {
@@ -31,13 +32,29 @@ namespace TopSaladSolution.Service
             try
             {
                 var newProduct = _mapper.Map<Product>(request);
+                newProduct.CreatedDate = DateTime.Now;
+                newProduct.ModifiedDate = DateTime.Now;
+
+                var productTranslation = new ProductTranslation
+                {
+                    Name = request?.Name,
+                    Description = request?.Description,
+                    Details = request?.Details,
+                    SeoAlias = request?.SeoTitle,
+                    SeoTitle = request?.SeoAlias,
+                    LanguageId = request.LanguageId,
+                    CreatedDate = DateTime.Now,
+                    ModifiedDate = DateTime.Now,
+                };
+
+                newProduct.ProductTranslations.Add(productTranslation);
                 await _productRepository!.Insert(newProduct);
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Message = "Insert Success"
+                    Message = Message.CreatedSuccess
                 };
-                _logger.LogInformation("Insert Success");
+                _logger.LogInformation($"{result.Message}: {newProduct.Id}");
                 return result;
             }
             catch (Exception ex)
@@ -47,32 +64,8 @@ namespace TopSaladSolution.Service
                     StatusCode = HttpStatusCode.BadRequest,
                     Message = ex.Message
                 };
-                _logger.LogError($"Insert Failed {ex.Message}");
+                _logger.LogError($"{Message.CreatedFailed}: {ex.Message}");
                 return result;
-            }
-        }
-
-        public async Task Delete(int productId)
-        {
-            try
-            {
-                var product = await _productRepository.GetById(productId);
-                await _productRepository.Delete(product);
-                var result = new
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Message = "Item has been deleted."
-                };
-                _logger.LogInformation($"{result.Message}");
-            }
-            catch (Exception ex)
-            {
-                var result = new
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = ex.Message
-                };
-                _logger.LogError($"Insert Failed {result.Message}");
             }
         }
 
@@ -93,18 +86,19 @@ namespace TopSaladSolution.Service
             throw new NotImplementedException();
         }
 
-        public async Task Update(ProductEditRequest request)
+        public async Task<object> Update(ProductEditRequest request)
         {
             try
             {
                 var product = _mapper.Map<Product>(request);
-                await _productRepository.Delete(product);
+                await _productRepository.Update(product);
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Message = "Item has been deleted."
+                    Message = Message.Updated
                 };
                 _logger.LogInformation($"{result.Message}");
+                return result;
             }
             catch (Exception ex)
             {
@@ -113,7 +107,35 @@ namespace TopSaladSolution.Service
                     StatusCode = HttpStatusCode.BadRequest,
                     Message = ex.Message
                 };
-                _logger.LogError($"Insert Failed {result.Message}");
+                _logger.LogError($"{Message.UpdatedFailed} {result.Message}");
+                return result;
+            }
+        }
+
+        public async Task<object> SoftDelete(ProductSoftDeleteRequest request)
+        {
+            try
+            {
+                var product = _mapper.Map<Product>(request);
+                request.Status = Infrastructure.Enums.Status.InActive;
+                await _productRepository.SoftDelete(product);
+                var result = new
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Message = Message.Removed
+                };
+                _logger.LogInformation($"{result.Message}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                var result = new
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                };
+                _logger.LogError($"{Message.RemovedFailed} {result.Message}");
+                return result;
             }
         }
     }

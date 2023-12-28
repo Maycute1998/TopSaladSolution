@@ -6,7 +6,8 @@ namespace TopSaladSolution.Infrastructure.Entities
     {
         public string Name { get; set; }
         public bool IsDefault { get; set; }
-        public List<ProductTranslation> ProductTranslations { get; set; }
-        public List<CategoryTranslation> CategoryTranslations { get; set; }
+        public ICollection<ProductTranslation> ProductTranslations { get; set; } = new List<ProductTranslation>();
+        public ICollection<CategoryTranslation> CategoryTranslations { get; set; } = new List<CategoryTranslation>();
+        public ICollection<SubCategoryTranslation> SubCategoryTranslations { get; set; } = new List<CategoryTranslation>();
     }
 }

@@ -17,7 +17,7 @@ namespace TopSaladSolution.Infrastructure.Entities
         public string? RecipientEmail { set; get; }
         public string? RecipientPhoneNumber { set; get; }
         public OrderStatus Status { set; get; }
-        public List<OrderDetail> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
         public AppUser AppUser { get; set; }
     }

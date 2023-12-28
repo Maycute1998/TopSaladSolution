@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using TopSaladSolution.Data.Configurations;
 using TopSaladSolution.Infrastructure.Entities;
+using TopSaladSolution.Infrastructure.EntityConfigurations;
 
 namespace TopSaladSolution.Infrastructure.EF
 {
@@ -23,7 +24,8 @@ namespace TopSaladSolution.Infrastructure.EF
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
             modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
-            modelBuilder.ApplyConfiguration(new ProductInCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new SubCategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new SubCategoryTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
@@ -49,6 +51,8 @@ namespace TopSaladSolution.Infrastructure.EF
         public DbSet<ProductTranslation> ProductTranslations { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<SubCategoryTranslation> SubCategoryTranslations { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }

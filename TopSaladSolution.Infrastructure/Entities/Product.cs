@@ -9,10 +9,10 @@ namespace TopSaladSolution.Infrastructure.Entities
         public decimal OriginalPrice { get; set; }
         public int Stock { get; set; }
 
-        public List<ProductInCategory> ProductInCategories { get; set; }
-        public List<OrderDetail> OrderDetails { set; get; }
-        public List<Cart> Carts { get; set; }
-        public List<ProductTranslation> ProductTranslations { get; set; }
-        public List<ProductImage> ProductImages { get; set; }
+        public SubCategory SubCategories { get; set; }
+        public ICollection<OrderDetail> OrderDetails { set; get; } = new List<OrderDetail>();
+        public ICollection<Cart> Carts { get; set; } = new List<Cart>();
+        public ICollection<ProductTranslation> ProductTranslations { get; set; } = new List<ProductTranslation> { };
+        public ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
     }
 }

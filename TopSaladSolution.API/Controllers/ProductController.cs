@@ -30,20 +30,50 @@ namespace TopSaladSolution.API.Controllers
             }
         }
 
-        [HttpGet(Name = "GetProductById")]
+        [HttpGet]
         public async Task<IActionResult> GetById(int id)
         {
             var book = await _productService.GetById(id);
             return book == null ? NotFound() : Ok(book);
         }
 
-        [HttpPost(Name = "AddProduct")]
+        [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductCreateRequest product)
         {
             try
             {
-                var book = await _productService.Create(product);
-                return Ok(book);
+                var newProduct = await _productService.Create(product);
+                return Ok(newProduct);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateProduct(ProductEditRequest product)
+        {
+            try
+            {
+                var updatedProduct = await _productService.Update(product);
+                return Ok(updatedProduct);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> DeleteProduct(ProductSoftDeleteRequest product)
+        {
+            try
+            {
+                var deletedProduct = await _productService.SoftDelete(product);
+                return Ok(deletedProduct);
             }
             catch
             {

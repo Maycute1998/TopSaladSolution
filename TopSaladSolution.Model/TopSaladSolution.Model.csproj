@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TopSaladSolution.Infrastructure\TopSaladSolution.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

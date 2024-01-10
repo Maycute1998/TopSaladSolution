@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using TopSaladSolution.Common.Enums;
 using TopSaladSolution.Infrastructure.Entities;
-using TopSaladSolution.Infrastructure.Enums;
 
 namespace TopSaladSolution.Data.Configurations
 {
@@ -15,7 +15,7 @@ namespace TopSaladSolution.Data.Configurations
 
             builder.Property(x => x.Id).UseIdentityColumn();
 
-            builder.Property(x => x.Status).HasDefaultValue(Status.Active);
+            builder.Property(x => x.Status).HasDefaultValue(ItemStatus.Active);
 
             builder.HasMany(x => x.SubCategories)
                 .WithOne(x => x.Categories)

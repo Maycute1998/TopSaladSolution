@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TopSaladSolution.Infrastructure.Enums;
+using TopSaladSolution.Common.Enums;
 
 namespace TopSaladSolution.Infrastructure.Entities
 {
@@ -16,7 +13,7 @@ namespace TopSaladSolution.Infrastructure.Entities
         public string? RecipientAddress { set; get; }
         public string? RecipientEmail { set; get; }
         public string? RecipientPhoneNumber { set; get; }
-        public OrderStatus Status { set; get; }
+        public ItemStatus Status { set; get; }
         public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
         public AppUser AppUser { get; set; }

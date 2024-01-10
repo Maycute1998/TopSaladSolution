@@ -11,9 +11,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\TopSaladSolution.Infrastructure\TopSaladSolution.Infrastructure.csproj" />
-    <ProjectReference Include="..\TopSaladSolution.Model\TopSaladSolution.Model.csproj" />
-  </ItemGroup>
-
 </Project>

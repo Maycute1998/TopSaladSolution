@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TopSaladSolution.Infrastructure\TopSaladSolution.Infrastructure.csproj" />
+    <ProjectReference Include="..\TopSaladSolution.Common\TopSaladSolution.Common.csproj" />
   </ItemGroup>
 
 </Project>

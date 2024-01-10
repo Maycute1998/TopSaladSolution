@@ -1,14 +1,11 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using TopSaladSolution.Common.Repositories;
+using TopSaladSolution.AutoMapperProfile;
 using TopSaladSolution.Infrastructure.EF;
-using TopSaladSolution.Infrastructure.Entities;
-using TopSaladSolution.Interface;
-using TopSaladSolution.Model.Products;
+using TopSaladSolution.Infrastructure.Repositories;
+using TopSaladSolution.Interface.Services;
 using TopSaladSolution.Service;
-using TopSaladSolution.Service.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,12 +37,12 @@ builder.Services.AddScoped<IProductService, ProductService>();
 //builder.Services.AddAutoMapper(typeof(ProductProfile));
 var mappingConfig = new MapperConfiguration(mc =>
 {
-    mc.AddProfile(new ProductProfile());
+    mc.AddProfile(new ApplicationMapper());
 });
 IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 #endregion
 var app = builder.Build();
 

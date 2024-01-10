@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TopSaladSolution.AutoMapperProfile\TopSaladSolution.AutoMapperProfile.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Common\TopSaladSolution.Common.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Interface\TopSaladSolution.Interface.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Model\TopSaladSolution.Model.csproj" />

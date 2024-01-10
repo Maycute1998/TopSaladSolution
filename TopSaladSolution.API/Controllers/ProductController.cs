@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TopSaladSolution.Interface;
+﻿using Microsoft.AspNetCore.Mvc;
+using TopSaladSolution.Interface.Services;
 using TopSaladSolution.Model.Products;
-using TopSaladSolution.Service;
 
 namespace TopSaladSolution.API.Controllers
 {

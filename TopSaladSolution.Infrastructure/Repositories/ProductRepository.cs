@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TopSaladSolution.Infrastructure.EF;
 using TopSaladSolution.Infrastructure.Entities;
+using System.Threading.Tasks;
+using TopSaladSolution.Model.Products;
 
 namespace TopSaladSolution.Infrastructure.Repositories
 {
-    public interface ProductRepository<T> where T : BaseEntity
+    public class ProductRepository : Repository<Product>, IProductRepository
     {
-        IQueryable<T> GetAll();
-        T GetById(int id);
-        void Insert(T entity);
-        void Update(T entity);
-        void Delete(int id);
+        public ProductRepository(TopSaladDbContext context) : base(context)
+        {
+        }
+
+        public Task<List<ProductVM>> GetAllPaging(string keyword, int pageIndex, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Product> GetPopularDevelopers(int count)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

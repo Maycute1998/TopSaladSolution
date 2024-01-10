@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TopSaladSolution.Infrastructure.Enums;
+using TopSaladSolution.Common.Enums;
 
 namespace TopSaladSolution.Infrastructure.Entities
 {
@@ -18,6 +14,6 @@ namespace TopSaladSolution.Infrastructure.Entities
         public decimal? DiscountAmount { set; get; }
         public string ProductIds { set; get; }
         public string ProductCategoryIds { set; get; }
-        public Status Status { set; get; }
+        public ItemStatus Status { set; get; }
     }
 }

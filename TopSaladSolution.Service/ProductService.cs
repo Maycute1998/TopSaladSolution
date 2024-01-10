@@ -1,29 +1,25 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using TopSaladSolution.Common.Repositories;
 using TopSaladSolution.Infrastructure.Entities;
-using TopSaladSolution.Interface;
 using TopSaladSolution.Model.Products;
 using TopSaladSolution.Common.Constant;
+using TopSaladSolution.Interface.Services;
+using TopSaladSolution.Infrastructure.Repositories;
+using TopSaladSolution.Common.Enums;
 
 namespace TopSaladSolution.Service
 {
     public class ProductService : IProductService
     {
-        private readonly IRepository<Product> _productRepository;
+        //private readonly IRepository<Product> _productRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductService> _logger;
 
-        public ProductService(IRepository<Product> productRepository, IMapper mapper, ILogger<ProductService> logger)
+        public ProductService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<ProductService> logger)
         {
-            _productRepository = productRepository;
+            _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
         }
@@ -40,15 +36,12 @@ namespace TopSaladSolution.Service
                     Name = request?.Name,
                     Description = request?.Description,
                     Details = request?.Details,
-                    SeoAlias = request?.SeoTitle,
-                    SeoTitle = request?.SeoAlias,
-                    LanguageId = request.LanguageId,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now,
                 };
 
                 newProduct.ProductTranslations.Add(productTranslation);
-                await _productRepository!.Insert(newProduct);
+                await _unitOfWork.ProductRepository.Add(newProduct);
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -71,13 +64,13 @@ namespace TopSaladSolution.Service
 
         public async Task<List<ProductVM>> GetAllAsync()
         {
-            var result = await _productRepository.GetAll();
+            var result = await _unitOfWork.ProductRepository.GetAll();
             return _mapper.Map<List<ProductVM>>(result);
         }
 
         public async Task<ProductVM> GetById(int id)
         {
-            var result = await _productRepository.GetById(id);
+            var result = await _unitOfWork.ProductRepository.GetById(id);
             return _mapper.Map<ProductVM>(result);
         }
 
@@ -91,7 +84,7 @@ namespace TopSaladSolution.Service
             try
             {
                 var product = _mapper.Map<Product>(request);
-                await _productRepository.Update(product);
+                await _unitOfWork.ProductRepository.Update(product);
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -117,8 +110,8 @@ namespace TopSaladSolution.Service
             try
             {
                 var product = _mapper.Map<Product>(request);
-                request.Status = Infrastructure.Enums.Status.InActive;
-                await _productRepository.SoftDelete(product);
+                request.Status = ItemStatus.InActive;
+                await _unitOfWork.ProductRepository.Remove(product);
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,

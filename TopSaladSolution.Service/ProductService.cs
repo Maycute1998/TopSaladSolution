@@ -7,6 +7,7 @@ using TopSaladSolution.Common.Constant;
 using TopSaladSolution.Interface.Services;
 using TopSaladSolution.Infrastructure.Repositories;
 using TopSaladSolution.Common.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace TopSaladSolution.Service
 {
@@ -38,7 +39,10 @@ namespace TopSaladSolution.Service
                     Details = request?.Details,
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now,
-                };
+                    LanguageId = 1,
+                    SeoTitle= request?.Name,
+                    SeoAlias= request?.Name
+                };  
 
                 newProduct.ProductTranslations.Add(productTranslation);
                 await _unitOfWork.ProductRepository.Add(newProduct);
@@ -70,8 +74,8 @@ namespace TopSaladSolution.Service
 
         public async Task<ProductVM> GetById(int id)
         {
-            var result = await _unitOfWork.ProductRepository.GetById(id);
-            return _mapper.Map<ProductVM>(result);
+            var product = await _unitOfWork.ProductRepository.GetSingleAsync(x => x.Id == id, include: x => x.Include(a => a.ProductTranslations));
+            return _mapper.Map<ProductVM>(product);
         }
 
         public Task<List<ProductVM>> GetAllPaging(string keyword, int pageIndex, int pageSize)

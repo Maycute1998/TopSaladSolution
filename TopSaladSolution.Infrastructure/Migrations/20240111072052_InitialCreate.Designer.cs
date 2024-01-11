@@ -12,8 +12,8 @@ using TopSaladSolution.Infrastructure.EF;
 namespace TopSaladSolution.Infrastructure.Migrations
 {
     [DbContext(typeof(TopSaladDbContext))]
-    [Migration("20231227075142_initialCreate")]
-    partial class initialCreate
+    [Migration("20240111072052_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -253,8 +253,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -288,10 +288,10 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Status")
+                    b.Property<int>("Status")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.HasKey("Id");
 
@@ -338,8 +338,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -383,8 +383,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -412,8 +412,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -488,8 +488,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("OrderId", "ProductId");
 
@@ -515,8 +515,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Property<decimal>("OriginalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("Stock")
                         .ValueGeneratedOnAdd()
@@ -532,6 +532,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .HasDefaultValue(0);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SubCategoryId");
 
                     b.ToTable("Products", (string)null);
                 });
@@ -571,29 +573,14 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImages", (string)null);
-                });
-
-            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductInCategory", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CategoryId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductInCategory", (string)null);
                 });
 
             modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductTranslation", b =>
@@ -636,8 +623,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Property<string>("SeoTitle")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -682,11 +669,9 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductCategoryIds")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductIds")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
@@ -732,8 +717,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Property<int>("SortOrder")
                         .HasColumnType("int");
 
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -743,6 +728,93 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Slides", (string)null);
+                });
+
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.SubCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsShow")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("SubCategories", (string)null);
+                });
+
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.SubCategoryTranslation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LanguageId")
+                        .HasMaxLength(5)
+                        .IsUnicode(false)
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SeoAlias")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("SeoDescription")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("SeoTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LanguageId");
+
+                    b.HasIndex("SubCategoryId");
+
+                    b.ToTable("SubCategoryTranslation", (string)null);
                 });
 
             modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Transaction", b =>
@@ -861,6 +933,17 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Product", b =>
+                {
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.SubCategory", "SubCategories")
+                        .WithMany("Products")
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubCategories");
+                });
+
             modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductImage", b =>
                 {
                     b.HasOne("TopSaladSolution.Infrastructure.Entities.Product", "Product")
@@ -868,25 +951,6 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.ProductInCategory", b =>
-                {
-                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Category", "Category")
-                        .WithMany("ProductInCategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Product", "Product")
-                        .WithMany("ProductInCategories")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("Product");
                 });
@@ -908,6 +972,36 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Navigation("Language");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.SubCategory", b =>
+                {
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Category", "Categories")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categories");
+                });
+
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.SubCategoryTranslation", b =>
+                {
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.Language", "Language")
+                        .WithMany("SubCategoryTranslations")
+                        .HasForeignKey("LanguageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TopSaladSolution.Infrastructure.Entities.SubCategory", "SubCategory")
+                        .WithMany("SubCategoryTranslations")
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Language");
+
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Transaction", b =>
@@ -934,7 +1028,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 {
                     b.Navigation("CategoryTranslations");
 
-                    b.Navigation("ProductInCategories");
+                    b.Navigation("SubCategories");
                 });
 
             modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Language", b =>
@@ -942,6 +1036,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     b.Navigation("CategoryTranslations");
 
                     b.Navigation("ProductTranslations");
+
+                    b.Navigation("SubCategoryTranslations");
                 });
 
             modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.Order", b =>
@@ -957,9 +1053,14 @@ namespace TopSaladSolution.Infrastructure.Migrations
 
                     b.Navigation("ProductImages");
 
-                    b.Navigation("ProductInCategories");
-
                     b.Navigation("ProductTranslations");
+                });
+
+            modelBuilder.Entity("TopSaladSolution.Infrastructure.Entities.SubCategory", b =>
+                {
+                    b.Navigation("Products");
+
+                    b.Navigation("SubCategoryTranslations");
                 });
 #pragma warning restore 612, 618
         }

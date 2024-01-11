@@ -8,7 +8,7 @@ namespace TopSaladSolution.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<SubCategoryTranslation> builder)
         {
-            builder.ToTable("CategoryTranslations");
+            builder.ToTable("SubCategoryTranslation");
 
             builder.HasKey(x => x.Id);
 

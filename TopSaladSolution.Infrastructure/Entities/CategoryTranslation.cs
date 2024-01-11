@@ -4,10 +4,10 @@
     {
         public int CategoryId { get; set; }
         public string Name { get; set; }
-        public string SeoDescription { get; set; } = null;
-        public string SeoTitle { get; set; } = null;
-        public string SeoAlias { get; set; } = null;
-        public int LanguageId { get; set; } = 0;
+        public string SeoDescription { get; set; }
+        public string SeoTitle { get; set; }
+        public string SeoAlias { get; set; }
+        public int LanguageId { get; set; }
         public Language Language { get; set; }
         public Category Category { get; set; }
     }

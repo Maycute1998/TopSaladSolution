@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TopSaladSolution.Infrastructure.Migrations
 {
-    public partial class initialCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -142,7 +142,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Order = table.Column<int>(type: "int", nullable: false),
                     IsShow = table.Column<bool>(type: "bit", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -161,7 +161,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     Email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -178,32 +178,13 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDefault = table.Column<bool>(type: "bit", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Languages", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SubCategoryId = table.Column<int>(type: "int", nullable: false),
-                    Views = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -219,8 +200,8 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     ApplyForAll = table.Column<bool>(type: "bit", nullable: false),
                     DiscountPercent = table.Column<int>(type: "int", nullable: true),
                     DiscountAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    ProductIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductCategoryIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductCategoryIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -241,7 +222,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     Url = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Image = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     SortOrder = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -305,6 +286,30 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SubCategories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    IsShow = table.Column<bool>(type: "bit", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CategoryTranslations",
                 columns: table => new
                 {
@@ -316,7 +321,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     SeoTitle = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     SeoAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     LanguageId = table.Column<int>(type: "int", unicode: false, maxLength: 5, nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -338,6 +343,64 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubCategoryId = table.Column<int>(type: "int", nullable: false),
+                    Views = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    OriginalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_SubCategories_SubCategoryId",
+                        column: x => x.SubCategoryId,
+                        principalTable: "SubCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubCategoryTranslation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SubCategoryId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    SeoDescription = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    SeoTitle = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    SeoAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    LanguageId = table.Column<int>(type: "int", unicode: false, maxLength: 5, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubCategoryTranslation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubCategoryTranslation_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SubCategoryTranslation_SubCategories_SubCategoryId",
+                        column: x => x.SubCategoryId,
+                        principalTable: "SubCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Carts",
                 columns: table => new
                 {
@@ -347,7 +410,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -369,6 +432,36 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderDetails",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDetails", x => new { x.OrderId, x.ProductId });
+                    table.ForeignKey(
+                        name: "FK_OrderDetails_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderDetails_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductImages",
                 columns: table => new
                 {
@@ -380,7 +473,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     IsDefault = table.Column<bool>(type: "bit", nullable: false),
                     SortOrder = table.Column<int>(type: "int", nullable: false),
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -389,30 +482,6 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     table.PrimaryKey("PK_ProductImages", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProductImages_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ProductInCategory",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductInCategory", x => new { x.CategoryId, x.ProductId });
-                    table.ForeignKey(
-                        name: "FK_ProductInCategory_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProductInCategory_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -432,7 +501,7 @@ namespace TopSaladSolution.Infrastructure.Migrations
                     SeoTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SeoAlias = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     LanguageId = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -447,36 +516,6 @@ namespace TopSaladSolution.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ProductTranslations_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrderDetails",
-                columns: table => new
-                {
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderDetails", x => new { x.OrderId, x.ProductId });
-                    table.ForeignKey(
-                        name: "FK_OrderDetails_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderDetails_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -519,9 +558,9 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductInCategory_ProductId",
-                table: "ProductInCategory",
-                column: "ProductId");
+                name: "IX_Products_SubCategoryId",
+                table: "Products",
+                column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductTranslations_LanguageId",
@@ -532,6 +571,21 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 name: "IX_ProductTranslations_ProductId",
                 table: "ProductTranslations",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubCategories_CategoryId",
+                table: "SubCategories",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubCategoryTranslation_LanguageId",
+                table: "SubCategoryTranslation",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubCategoryTranslation_SubCategoryId",
+                table: "SubCategoryTranslation",
+                column: "SubCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserId",
@@ -578,9 +632,6 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 name: "ProductImages");
 
             migrationBuilder.DropTable(
-                name: "ProductInCategory");
-
-            migrationBuilder.DropTable(
                 name: "ProductTranslations");
 
             migrationBuilder.DropTable(
@@ -590,22 +641,28 @@ namespace TopSaladSolution.Infrastructure.Migrations
                 name: "Slides");
 
             migrationBuilder.DropTable(
+                name: "SubCategoryTranslation");
+
+            migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Languages");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "SubCategories");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

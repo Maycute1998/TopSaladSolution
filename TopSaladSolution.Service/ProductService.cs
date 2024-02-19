@@ -8,6 +8,12 @@ using TopSaladSolution.Interface.Services;
 using TopSaladSolution.Infrastructure.Repositories;
 using TopSaladSolution.Common.Enums;
 using Microsoft.EntityFrameworkCore;
+using TopSaladSolution.Infrastructure.EF;
+using System.Linq;
+using TopSaladSolution.Model.PagingRequest;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using OfficeOpenXml;
 
 namespace TopSaladSolution.Service
 {
@@ -17,12 +23,18 @@ namespace TopSaladSolution.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductService> _logger;
+        private TopSaladDbContext _context;
 
-        public ProductService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<ProductService> logger)
+        public ProductService(IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            ILogger<ProductService> logger, 
+            TopSaladDbContext context
+            )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
+            _context = context;
         }
         public async Task<object> Create(ProductCreateRequest request)
         {
@@ -78,9 +90,59 @@ namespace TopSaladSolution.Service
             return _mapper.Map<ProductVM>(product);
         }
 
-        public Task<List<ProductVM>> GetAllPaging(string keyword, int pageIndex, int pageSize)
+        public async Task<ProductVM> GetByCategoryId(int id)
         {
-            throw new NotImplementedException();
+            var product = await _unitOfWork.ProductRepository.GetSingleAsync(x => x.Id == id, include: x => x.Include(a => a.ProductTranslations));
+            return _mapper.Map<ProductVM>(product);
+        }
+
+        public async Task<PagedResult<ProductViewModel>> GetAllPaging(ProductPagingRequest productPagingRequest)
+        {
+            // Select product
+            var query = from product in _context.Products
+                        join productTrans in _context.ProductTranslations on product.Id equals productTrans.ProductId
+                        join subCategory in _context.SubCategories on product.SubCategoryId equals subCategory.Id
+                        join subCategoryTrans in _context.SubCategoryTranslations on product.SubCategoryId equals subCategoryTrans.SubCategoryId
+                        join category in _context.Categories on subCategory.CategoryId equals category.Id
+                        join categoryTrans in _context.CategoryTranslations on category.Id equals categoryTrans.CategoryId
+
+                        select new { product, productTrans, subCategoryTrans, category, categoryTrans };
+
+            // Filter
+            if (!string.IsNullOrEmpty(productPagingRequest.Keyword))
+            {
+                query = query.Where(x => x.productTrans.Name.Contains(productPagingRequest.Keyword));
+            }
+
+            if(productPagingRequest.CategoryId != null)
+            {
+                query = query.Where(x => x.category.Id == productPagingRequest.CategoryId);
+            }
+
+            int totalRow = await query.CountAsync();
+
+            var results = query.Skip((productPagingRequest.PageIndex - 1) * productPagingRequest.PageSize)
+                .Take(productPagingRequest.PageSize)
+                    .Select(x => new ProductViewModel()
+                     {
+                        Id = x.product.Id,
+                        Name = x.productTrans.Name,
+                        SubCategoryName = x.subCategoryTrans.Name,
+                        CategoryName = x.categoryTrans.Name,
+                        Description = x.productTrans.Description,
+                        OriginalPrice = x.product.OriginalPrice,
+                        Stock = x.product.Stock,
+                        Views = x.product.Views,
+                        Status = x.product.Status,
+                    });
+
+            var pageResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecords = totalRow,
+                Items = await results.ToListAsync()
+            };
+
+            return pageResult;
         }
 
         public async Task<object> Update(ProductEditRequest request)
@@ -134,6 +196,59 @@ namespace TopSaladSolution.Service
                 _logger.LogError($"{Message.RemovedFailed} {result.Message}");
                 return result;
             }
+        }
+
+        public async Task<List<ProductCreateRequest>> ImportProduct(IFormFile formFile, CancellationToken cancellationToken)
+        {
+            var productList = new List<ProductCreateRequest>();
+
+            using (var stream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(stream, cancellationToken);
+
+                using (var package = new ExcelPackage(stream))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        productList.Add(new ProductCreateRequest
+                        {
+                            Name = worksheet.Cells[row, 1].Value.ToString().Trim(),
+                            Description = worksheet.Cells[row, 2].Value.ToString().Trim(),
+                            SubCategoryId = int.Parse(worksheet.Cells[row, 3].Value.ToString()),
+                            OriginalPrice = decimal.Parse(worksheet.Cells[row, 4].Value.ToString()),
+                            Stock = int.Parse(worksheet.Cells[row, 5].Value.ToString()),
+                            CreatedDate = DateTime.UtcNow,
+                            ModifiedDate = DateTime.UtcNow,
+                            Status = ItemStatus.Active
+                        });
+                    }
+                }
+            }
+
+            try
+            {
+                foreach (var product in productList)
+                {
+                    if (product != null)
+                    {
+                        await Create(product);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var result = new
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = ex.Message
+                };
+                _logger.LogError($"{Message.CreatedFailed}, {ex.Message}");
+            }
+
+            return productList;
         }
     }
 }

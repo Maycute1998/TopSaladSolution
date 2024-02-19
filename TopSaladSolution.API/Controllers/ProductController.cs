@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
+using System.Collections.Generic;
+using TopSaladSolution.Infrastructure.Entities;
 using TopSaladSolution.Interface.Services;
+using TopSaladSolution.Model.PagingRequest;
 using TopSaladSolution.Model.Products;
 
 namespace TopSaladSolution.API.Controllers
@@ -16,11 +20,23 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpGet(Name = "GetAllProducts")]
-        public async Task <IActionResult> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
                 return Ok(await _productService.GetAllAsync());
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+        [HttpGet(Name = "GetAllPaging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] ProductPagingRequest productPagingRequest)
+        {
+            try
+            {
+                return Ok(await _productService.GetAllPaging(productPagingRequest));
             }
             catch
             {
@@ -78,6 +94,23 @@ namespace TopSaladSolution.API.Controllers
                 return BadRequest();
             }
 
+        }
+
+        [HttpPost("ImportProducts")]
+        public async Task<ImportResponse<List<ProductCreateRequest>>> ImportProductsFromFile(IFormFile formFile, CancellationToken cancellationToken)
+        {
+            if (formFile == null || formFile.Length <= 0)
+            {
+                return ImportResponse<List<ProductCreateRequest>>.GetResult(-1, "formfile is empty");
+            }
+
+            if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                return ImportResponse<List<ProductCreateRequest>>.GetResult(-1, "Not Support file extension");
+            }
+
+            var newProducts = await _productService.ImportProduct(formFile, cancellationToken);
+            return ImportResponse<List<ProductCreateRequest>>.GetResult(0, "Import Success", newProducts);
         }
     }
 }

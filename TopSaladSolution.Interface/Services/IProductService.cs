@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Http;
+using TopSaladSolution.Model.PagingRequest;
 using TopSaladSolution.Model.Products;
 
 namespace TopSaladSolution.Interface.Services
@@ -10,6 +12,7 @@ namespace TopSaladSolution.Interface.Services
         Task<object> SoftDelete(ProductSoftDeleteRequest request);
         Task<List<ProductVM>> GetAllAsync();
         Task<ProductVM> GetById(int id);
-        Task<List<ProductVM>> GetAllPaging(string keyword, int pageIndex, int pageSize);
+        Task<PagedResult<ProductViewModel>> GetAllPaging(ProductPagingRequest productPagingRequest);
+        Task<List<ProductCreateRequest>> ImportProduct(IFormFile formFile, CancellationToken cancellationToken);
     }
 }

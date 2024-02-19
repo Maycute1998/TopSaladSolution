@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TopSaladSolution.Common.Enums;
 
 namespace TopSaladSolution.Model.Products
 {
@@ -35,5 +36,21 @@ namespace TopSaladSolution.Model.Products
         public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
         public string ThumbnailImage { get; set; }
+    }
+
+    public class ProductViewModel
+    {
+        public int Id { set; get; }
+        public string? Name { set; get; }
+        public string? SubCategoryName { set; get; }
+        public string? CategoryName { set; get; }
+        public string? Description { set; get; }
+        public decimal OriginalPrice { set; get; }
+        public int Stock { set; get; }
+        public int Views { set; get; }
+        public DateTime ModifiedDate { set; get; }
+        public bool? IsFeatured { get; set; }
+        public string? ThumbnailImage { get; set; }
+        public ItemStatus Status { set; get; }
     }
 }

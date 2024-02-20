@@ -2,12 +2,14 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using TopSaladSolution.AutoMapperProfile;
+using TopSaladSolution.Common.Utilities;
 using TopSaladSolution.Infrastructure.EF;
 using TopSaladSolution.Infrastructure.Repositories;
 using TopSaladSolution.Interface.Services;
 using TopSaladSolution.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+var crossDomainOrigins = "topSaladSolutionCrossDomainOrigins";
 
 // Add services to the container.
 
@@ -20,8 +22,14 @@ builder.Services.AddSwaggerGen(c =>
     c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
 });
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+#region [Config-Cors-Domain]
+builder.Services.AddCors(o => o.AddPolicy(name: crossDomainOrigins, builder =>
+{
+    builder.AllowAnyOrigin()
+           .AllowAnyMethod()
+           .AllowAnyHeader();
+}));
+#endregion
 
 builder.Services.AddDbContext<DbContext, TopSaladDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TopSaladSolutionDb")));
@@ -29,6 +37,7 @@ builder.Services.AddDbContext<DbContext, TopSaladDbContext>(options =>
 
 #region Services
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IStorageService, FileStorageService>();
 #endregion
 
 #region Add Repository
@@ -56,6 +65,8 @@ if (app.Environment.IsDevelopment())
     });
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 }
+
+app.UseCors(crossDomainOrigins);
 
 app.UseHttpsRedirection();
 

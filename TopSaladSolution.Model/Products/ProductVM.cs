@@ -45,6 +45,7 @@ namespace TopSaladSolution.Model.Products
         public string? SubCategoryName { set; get; }
         public string? CategoryName { set; get; }
         public string? Description { set; get; }
+        public string? Details { set; get; }
         public decimal OriginalPrice { set; get; }
         public int Stock { set; get; }
         public int Views { set; get; }

@@ -9,11 +9,12 @@ using TopSaladSolution.Infrastructure.Repositories;
 using TopSaladSolution.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using TopSaladSolution.Infrastructure.EF;
-using System.Linq;
 using TopSaladSolution.Model.PagingRequest;
 using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using OfficeOpenXml;
+using TopSaladSolution.Offices.ImportExcel;
+using TopSaladSolution.Common.Utilities;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TopSaladSolution.Service
 {
@@ -24,17 +25,27 @@ namespace TopSaladSolution.Service
         private readonly IMapper _mapper;
         private readonly ILogger<ProductService> _logger;
         private TopSaladDbContext _context;
+        private readonly IStorageService _storageService;
 
         public ProductService(IUnitOfWork unitOfWork, 
             IMapper mapper, 
             ILogger<ProductService> logger, 
-            TopSaladDbContext context
-            )
+            TopSaladDbContext context,
+            IStorageService storageService)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _context = context;
+            _storageService = storageService;
+        }
+
+        public async Task<string> SaveImage(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.ToString();
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return fileName;
         }
         public async Task<object> Create(ProductCreateRequest request)
         {
@@ -54,7 +65,25 @@ namespace TopSaladSolution.Service
                     LanguageId = 1,
                     SeoTitle= request?.Name,
                     SeoAlias= request?.Name
-                };  
+                };
+
+                // Save image
+                if (request.ThumbnailImage != null)
+                {
+                    newProduct.ProductImages = new List<ProductImage>()
+                    {
+                        new ProductImage()
+                        {
+                            Caption = request.Name,
+                            CreatedDate= DateTime.Now,
+                            FileSize = request.ThumbnailImage.Length,
+                            ImagePath = await SaveImage(request.ThumbnailImage),
+                            IsDefault = true,
+                            SortOrder = 1
+                        }
+                    };
+                }
+
 
                 newProduct.ProductTranslations.Add(productTranslation);
                 await _unitOfWork.ProductRepository.Add(newProduct);
@@ -78,10 +107,34 @@ namespace TopSaladSolution.Service
             }
         }
 
-        public async Task<List<ProductVM>> GetAllAsync()
+        public async Task<List<ProductViewModel>> GetAllAsync()
         {
-            var result = await _unitOfWork.ProductRepository.GetAll();
-            return _mapper.Map<List<ProductVM>>(result);
+            // Select product
+            var query = from product in _context.Products
+                        join productTrans in _context.ProductTranslations on product.Id equals productTrans.ProductId
+                        join subCategory in _context.SubCategories on product.SubCategoryId equals subCategory.Id
+                        join subCategoryTrans in _context.SubCategoryTranslations on product.SubCategoryId equals subCategoryTrans.SubCategoryId
+                        join category in _context.Categories on subCategory.CategoryId equals category.Id
+                        join categoryTrans in _context.CategoryTranslations on category.Id equals categoryTrans.CategoryId
+
+                        select new { product, productTrans, subCategoryTrans, category, categoryTrans };
+
+            // Filter
+            var results = await query.Select(x => new ProductViewModel()
+            {
+                Id = x.product.Id,
+                Name = x.productTrans.Name,
+                SubCategoryName = x.subCategoryTrans.Name,
+                CategoryName = x.categoryTrans.Name,
+                Description = x.productTrans.Description,
+                Details = x.productTrans.Details,
+                OriginalPrice = x.product.OriginalPrice,
+                Stock = x.product.Stock,
+                Views = x.product.Views,
+                Status = x.product.Status,
+            }).ToListAsync();
+
+            return results;
         }
 
         public async Task<ProductVM> GetById(int id)
@@ -130,6 +183,7 @@ namespace TopSaladSolution.Service
                         SubCategoryName = x.subCategoryTrans.Name,
                         CategoryName = x.categoryTrans.Name,
                         Description = x.productTrans.Description,
+                        Details = x.productTrans.Details,
                         OriginalPrice = x.product.OriginalPrice,
                         Stock = x.product.Stock,
                         Views = x.product.Views,
@@ -149,15 +203,32 @@ namespace TopSaladSolution.Service
         {
             try
             {
-                var product = _mapper.Map<Product>(request);
-                await _unitOfWork.ProductRepository.Update(product);
-                var result = new
+                var product = await _context.Products.FindAsync(request.Id);
+                var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == request.Id);
+
+                if (product is null || productTranslation is null)
                 {
-                    StatusCode = HttpStatusCode.OK,
-                    Message = Message.Updated
-                };
-                _logger.LogInformation($"{result.Message}");
-                return result;
+                    throw new Exception();
+                }
+                productTranslation.Name = request.Name;
+                productTranslation.Description = request.Description;
+                productTranslation.Details = request.Details;
+                product.OriginalPrice = request.OriginalPrice;
+
+                // Update image
+                if (request.ThumbnailImage != null)
+                {
+                    var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductId == request.Id);
+
+                    if (thumbnailImage is not null)
+                    {
+                        thumbnailImage.CreatedDate = DateTime.Now;
+                        thumbnailImage.FileSize = request.ThumbnailImage.Length;
+                        thumbnailImage.ImagePath = await SaveImage(request.ThumbnailImage);
+                        _context.ProductImages.Update(thumbnailImage);
+                    }
+                }
+                return _unitOfWork.ProductRepository.Update(product);
             }
             catch (Exception ex)
             {
@@ -177,7 +248,13 @@ namespace TopSaladSolution.Service
             {
                 var product = _mapper.Map<Product>(request);
                 request.Status = ItemStatus.InActive;
+                var images = _context.ProductImages.Where(i => i.ProductId == request.Id);
+                foreach (var image in images)
+                {
+                    await _storageService.DeleteFileAsync(image.ImagePath);
+                }
                 await _unitOfWork.ProductRepository.Remove(product);
+
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -201,30 +278,27 @@ namespace TopSaladSolution.Service
         public async Task<List<ProductCreateRequest>> ImportProduct(IFormFile formFile, CancellationToken cancellationToken)
         {
             var productList = new List<ProductCreateRequest>();
+            
 
             using (var stream = new MemoryStream())
             {
                 await formFile.CopyToAsync(stream, cancellationToken);
-
-                using (var package = new ExcelPackage(stream))
+                var data = ImportBuilder.ImportExcel(stream);
+                
+                for (var i = 0;  i < data.Rows.Count; i++) 
                 {
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                    var rowCount = worksheet.Dimension.Rows;
-
-                    for (int row = 2; row <= rowCount; row++)
+                    productList.Add(new ProductCreateRequest
                     {
-                        productList.Add(new ProductCreateRequest
-                        {
-                            Name = worksheet.Cells[row, 1].Value.ToString().Trim(),
-                            Description = worksheet.Cells[row, 2].Value.ToString().Trim(),
-                            SubCategoryId = int.Parse(worksheet.Cells[row, 3].Value.ToString()),
-                            OriginalPrice = decimal.Parse(worksheet.Cells[row, 4].Value.ToString()),
-                            Stock = int.Parse(worksheet.Cells[row, 5].Value.ToString()),
-                            CreatedDate = DateTime.UtcNow,
-                            ModifiedDate = DateTime.UtcNow,
-                            Status = ItemStatus.Active
-                        });
-                    }
+                        Name = data.Rows[i]["Name"].ToString(),
+                        Description = data.Rows[i]["Description"].ToString(),
+                        Details = data.Rows[i]["Ingredients"].ToString(),
+                        SubCategoryId = int.Parse(data.Rows[i]["SubCategoryId"].ToString()),
+                        OriginalPrice = decimal.Parse(data.Rows[i]["OriginalPrice"].ToString()),
+                        Stock = int.Parse(data.Rows[i]["Stock"].ToString()),
+                        CreatedDate = DateTime.UtcNow,
+                        ModifiedDate = DateTime.UtcNow,
+                        Status = ItemStatus.Active
+                    });
                 }
             }
 
@@ -249,6 +323,16 @@ namespace TopSaladSolution.Service
             }
 
             return productList;
+        }
+
+        public Task<int> AddImages(int productId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateImage(int productId, string caption, bool isDefault)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -52,7 +52,7 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(ProductCreateRequest product)
+        public async Task<IActionResult> CreateProduct([FromQuery]ProductCreateRequest product)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(ProductEditRequest product)
+        public async Task<IActionResult> UpdateProduct([FromQuery] ProductEditRequest product)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace TopSaladSolution.API.Controllers
 
         }
 
-        [HttpPut]
+        [HttpDelete]
         public async Task<IActionResult> DeleteProduct(ProductSoftDeleteRequest product)
         {
             try

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,19 +10,17 @@ namespace TopSaladSolution.Model.Products
 {
     public class ProductCreateRequest
     {
-        public string Name { set; get; }
-        public string Description { set; get; }
-        public string Details { set; get; }
-        public int SubCategoryId { get; set; }
+        public string? Name { set; get; }
+        public string? Description { set; get; }
+        public string? Details { set; get; }
+        public int? SubCategoryId { get; set; }
         public decimal OriginalPrice { get; set; }
         public int Stock { get; set; }
-        public int Views { get; set; }
-
-        public bool? IsFeatured { get; set; }
-        //public IFormFile ThumbnailImage { get; set; }
+        public bool IsFeatured { get; set; }
+        public IFormFile? ThumbnailImage { get; set; }
         public ItemStatus Status { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
     }
 }
     

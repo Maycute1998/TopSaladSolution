@@ -6,6 +6,9 @@ using System.Linq.Expressions;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using TopSaladSolution.Infrastructure.Repositories.SQLHelpers;
+using System.Data.Common;
+using System.Data;
 
 namespace TopSaladSolution.Infrastructure.Repositories
 {
@@ -100,75 +103,9 @@ namespace TopSaladSolution.Infrastructure.Repositories
         }
 
         #region[Execute-Store-Procedure]
-        /// <summary>
-        /// ExecuteListReaderAsync
-        /// Example :
-        /// <para>var result = await ExecuteListReaderAsync("store Procedure Name)</para>
-        /// </summary>
-        /// <param name="storeProcedureName"></param>
-        /// <returns>The List<Entity></returns>
-        public async Task<List<T>> ExecuteListReaderAsync(string storeProcedureName)
+        public ISQLHelpers SQLHelper()
         {
-            var result = await _dbSet.FromSqlRaw(storeProcedureName).ToListAsync();
-            return result;
-        }
-
-        /// <summary>
-        /// ExecuteListReaderAsync return the list data
-        /// Example :
-        /// <para>var param = new SqlParameter("@ProductId", ProductId)</para>
-        /// <para>var result = await ExecuteListReaderAsync("Sp_GetProductById @ProductId", param)</para>
-        /// </summary>
-        /// <param name="storeProcedureName"></param>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public Task<List<T>> ExecuteListReaderAsync(string storeProcedureName, SqlParameter parameter)
-        {
-            var result = _dbSet.FromSqlRaw($@"exec {storeProcedureName}", parameter).ToListAsync();
-            return result;
-        }
-
-        /// <summary>
-        /// ExecuteSingleReaderAsync return the Single Object
-        /// Example : var result = await ExecuteSingleReaderAsync("store Procedure Name) 
-        /// </summary>
-        /// <param name="storeProcedureName"></param>
-        /// <returns></returns>
-        public async Task<T> ExecuteSingleReaderAsync(string storeProcedureName)
-        {
-            var result = await _dbSet.FromSqlRaw(storeProcedureName).FirstOrDefaultAsync();
-            return result;
-        }
-
-        /// <summary>
-        /// ExecuteSingleReaderAsync return the Single Object
-        /// Example :
-        /// <para>var param = new SqlParameter("@ProductId", ProductId)</para>
-        /// <para>var result = await ExecuteSingleReaderAsync("Sp_GetProductById @ProductId", param)</para>
-        /// </summary>
-        /// <param name="storeProcedureName"></param>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public async Task<T> ExecuteSingleReaderAsync(string storeProcedureName, SqlParameter parameter)
-        {
-            var result = await _dbSet.FromSqlRaw($@"exec {storeProcedureName}", parameter).FirstOrDefaultAsync();
-            return result;
-        }
-
-        /// <summary>
-        /// ExecuteNonQueryAsync execute query for Insert,Update or Delete.Return the number
-        /// Example:
-        /// <para>var parameter = new List<SqlParameter>()</para>
-        /// <para> parameter.Add(new SqlParameter("@ProductName", product.ProductName))</para>
-        /// <para>var result = await ExecuteListReaderAsync("Sp_GetProductById @ProductId", parameter)</para>
-        /// </summary>
-        /// <param name="storeProcedureName"></param>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public async Task<int> ExecuteNonQueryAsync(string storeProcedureName, List<SqlParameter> parameter)
-        {
-            var result = await _dbContext.Database.ExecuteSqlRawAsync($@"exec {storeProcedureName}", parameter.ToArray());
-            return result;
+            return new SqlHelper(_dbContext);
         }
         #endregion
     }

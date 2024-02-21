@@ -13,28 +13,28 @@ using TopSaladSolution.Model.PagingRequest;
 using Microsoft.AspNetCore.Http;
 using TopSaladSolution.Offices.ImportExcel;
 using TopSaladSolution.Common.Utilities;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.Data;
 
 namespace TopSaladSolution.Service
 {
     public class ProductService : IProductService
     {
-        //private readonly IRepository<Product> _productRepository;
+        private readonly IRepository<Product> _productRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductService> _logger;
         private TopSaladDbContext _context;
         private readonly IStorageService _storageService;
 
-        public ProductService(IUnitOfWork unitOfWork,
+        public ProductService(IRepository<Product> productRepository,
+            IUnitOfWork unitOfWork,
             IMapper mapper,
             ILogger<ProductService> logger,
             TopSaladDbContext context,
             IStorageService storageService)
         {
+            _productRepository = productRepository;
             _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
@@ -50,52 +50,74 @@ namespace TopSaladSolution.Service
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return _storageService.GetFileUrl(fileName);
         }
+        //public async Task<object> Create(ProductCreateRequest request)
+        //{
+        //    try
+        //    {
+        //        var newProduct = _mapper.Map<Product>(request);
+        //        newProduct.CreatedDate = DateTime.Now;
+        //        newProduct.ModifiedDate = DateTime.Now;
+
+        //        var productTranslation = new ProductTranslation
+        //        {
+        //            Name = request?.Name,
+        //            Description = request?.Description,
+        //            Details = request?.Details,
+        //            CreatedDate = DateTime.Now,
+        //            ModifiedDate = DateTime.Now,
+        //            LanguageId = 1,
+        //            SeoTitle = request?.Name,
+        //            SeoAlias = request?.Name
+        //        };
+
+        //        // Save image
+        //        if (request.ThumbnailImage != null)
+        //        {
+        //            newProduct.ProductImages = new List<ProductImage>()
+        //            {
+        //                new ProductImage()
+        //                {
+        //                    Caption = request.Name,
+        //                    CreatedDate= DateTime.Now,
+        //                    FileSize = request.ThumbnailImage.Length,
+        //                    ImagePath = await SaveImage(request.ThumbnailImage),
+        //                    IsDefault = true,
+        //                    SortOrder = 1
+        //                }
+        //            };
+        //        }
+
+
+        //        newProduct.ProductTranslations.Add(productTranslation);
+        //        await _unitOfWork.ProductRepository.Add(newProduct);
+        //        var result = new
+        //        {
+        //            StatusCode = HttpStatusCode.OK,
+        //            Message = Message.CreatedSuccess
+        //        };
+        //        _logger.LogInformation($"{result.Message}: {newProduct.Id}");
+        //        return result;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        var result = new
+        //        {
+        //            StatusCode = HttpStatusCode.BadRequest,
+        //            Message = ex.Message
+        //        };
+        //        _logger.LogError($"{Message.CreatedFailed}: {ex.Message}");
+        //        return result;
+        //    }
+        //}
+
         public async Task<object> Create(ProductCreateRequest request)
         {
             try
             {
-                var newProduct = _mapper.Map<Product>(request);
-                newProduct.CreatedDate = DateTime.Now;
-                newProduct.ModifiedDate = DateTime.Now;
-
-                var productTranslation = new ProductTranslation
-                {
-                    Name = request?.Name,
-                    Description = request?.Description,
-                    Details = request?.Details,
-                    CreatedDate = DateTime.Now,
-                    ModifiedDate = DateTime.Now,
-                    LanguageId = 1,
-                    SeoTitle = request?.Name,
-                    SeoAlias = request?.Name
-                };
-
-                // Save image
-                if (request.ThumbnailImage != null)
-                {
-                    newProduct.ProductImages = new List<ProductImage>()
-                    {
-                        new ProductImage()
-                        {
-                            Caption = request.Name,
-                            CreatedDate= DateTime.Now,
-                            FileSize = request.ThumbnailImage.Length,
-                            ImagePath = await SaveImage(request.ThumbnailImage),
-                            IsDefault = true,
-                            SortOrder = 1
-                        }
-                    };
-                }
-
-
-                newProduct.ProductTranslations.Add(productTranslation);
-                await _unitOfWork.ProductRepository.Add(newProduct);
-                var result = new
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Message = Message.CreatedSuccess
-                };
-                _logger.LogInformation($"{result.Message}: {newProduct.Id}");
+                var result = CreateSlide();
+                dynamic dynamicResult = result;
+                var status = dynamicResult.status;
+                var message = dynamicResult.message;
                 return result;
             }
             catch (Exception ex)
@@ -110,34 +132,41 @@ namespace TopSaladSolution.Service
             }
         }
 
+        //public async Task<List<ProductViewModel>> GetAllAsync()
+        //{
+        //    // Select product
+        //    var query = from product in _context.Products
+        //                join productTrans in _context.ProductTranslations on product.Id equals productTrans.ProductId
+        //                join subCategory in _context.SubCategories on product.SubCategoryId equals subCategory.Id
+        //                join subCategoryTrans in _context.SubCategoryTranslations on product.SubCategoryId equals subCategoryTrans.SubCategoryId
+        //                join category in _context.Categories on subCategory.CategoryId equals category.Id
+        //                join categoryTrans in _context.CategoryTranslations on category.Id equals categoryTrans.CategoryId
+
+        //                select new { product, productTrans, subCategoryTrans, category, categoryTrans };
+
+        //    // Filter
+        //    var results = await query.Select(x => new ProductViewModel()
+        //    {
+        //        Id = x.product.Id,
+        //        Name = x.productTrans.Name,
+        //        SubCategoryName = x.subCategoryTrans.Name,
+        //        CategoryName = x.categoryTrans.Name,
+        //        Description = x.productTrans.Description,
+        //        Details = x.productTrans.Details,
+        //        OriginalPrice = x.product.OriginalPrice,
+        //        Stock = x.product.Stock,
+        //        Views = x.product.Views,
+        //        Status = x.product.Status,
+        //    }).ToListAsync();
+
+        //    return results;
+        //}
+
         public async Task<List<ProductViewModel>> GetAllAsync()
         {
             // Select product
-            var query = from product in _context.Products
-                        join productTrans in _context.ProductTranslations on product.Id equals productTrans.ProductId
-                        join subCategory in _context.SubCategories on product.SubCategoryId equals subCategory.Id
-                        join subCategoryTrans in _context.SubCategoryTranslations on product.SubCategoryId equals subCategoryTrans.SubCategoryId
-                        join category in _context.Categories on subCategory.CategoryId equals category.Id
-                        join categoryTrans in _context.CategoryTranslations on category.Id equals categoryTrans.CategoryId
-
-                        select new { product, productTrans, subCategoryTrans, category, categoryTrans };
-
-            // Filter
-            var results = await query.Select(x => new ProductViewModel()
-            {
-                Id = x.product.Id,
-                Name = x.productTrans.Name,
-                SubCategoryName = x.subCategoryTrans.Name,
-                CategoryName = x.categoryTrans.Name,
-                Description = x.productTrans.Description,
-                Details = x.productTrans.Details,
-                OriginalPrice = x.product.OriginalPrice,
-                Stock = x.product.Stock,
-                Views = x.product.Views,
-                Status = x.product.Status,
-            }).ToListAsync();
-
-            return results;
+            var query = await GetProducts();
+            return query;
         }
 
         public async Task<ProductVM> GetById(int id)
@@ -369,50 +398,37 @@ namespace TopSaladSolution.Service
         /// <returns></returns>
         private async Task<List<ProductViewModel>> GetProducts()
         {
-            var result = await _unitOfWork.ProductRepository.ExecuteListReaderAsync("SP_GetAllProduct");
-            return result.Select(x => new ProductViewModel
-            {
-                Id = x.Id
-            }).ToList();
-        }
-
-        private async Task<List<ProductViewModel>> GetProducts(int productId)
-        {
-            var param = new SqlParameter("@ProductId", productId);
-            var result = await _unitOfWork.ProductRepository.ExecuteListReaderAsync("SP_GetAllProduct @ProductId", param);
-            return result.Select(x => new ProductViewModel
-            {
-                Id = x.Id
-            }).ToList();
-        }
-
-        private async Task<ProductViewModel> GetSingleProduct()
-        {
-            var result = await _unitOfWork.ProductRepository.ExecuteSingleReaderAsync("SP_GetAllProduct @ProductId");
-            return new ProductViewModel
-            {
-                Id = result.Id
-            };
-        }
-
-        private async Task<ProductViewModel> GetSingleProduct(int productId)
-        {
-            var param = new SqlParameter("@ProductId", productId);
-            var result = await _unitOfWork.ProductRepository.ExecuteSingleReaderAsync("SP_GetAllProduct @ProductId", param);
-            return new ProductViewModel
-            {
-                Id = result.Id
-            };
-        }
-
-        private async Task<int> CreateProduct(ProductEditRequest request)
-        {
-            var parameter = new List<SqlParameter>
-            {
-                new("@ProductName", request.Name)
-            };
-            var result = await _unitOfWork.ProductRepository.ExecuteNonQueryAsync("SP_CreateProduct @ProductName", parameter);
+            var result = await _productRepository.SQLHelper().CreateNewSqlCommand()
+                .ExecuteReaderAsync<ProductViewModel>
+                (
+                    sProcName: "sp_GetAllProducts"
+                );
             return result;
+        }
+
+        private object CreateSlide()
+        {
+            _productRepository.SQLHelper().CreateNewSqlCommand()
+                .AddParameter("P_Name", "Test 1")
+                .AddParameter("P_Description", "Test 1")
+                .AddParameter("P_Url", "Test 1")
+                .AddParameter("P_Image", "Test 1")
+                .AddParameter("P_SortOrder", 1)
+                .AddParameter("P_Status", 1)
+                .ExecuteNonQuery
+                (
+                    sProcName: "sp_Create_Slides"
+                    , commandType: CommandType.StoredProcedure
+                    , out var status
+                    , out var message
+                );
+            var outStatus = status;
+            var outMessage = message;
+            return new
+            {
+                status,
+                message
+            };
         }
     }
 }

@@ -15,6 +15,8 @@ using TopSaladSolution.Offices.ImportExcel;
 using TopSaladSolution.Common.Utilities;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace TopSaladSolution.Service
 {
@@ -27,9 +29,9 @@ namespace TopSaladSolution.Service
         private TopSaladDbContext _context;
         private readonly IStorageService _storageService;
 
-        public ProductService(IUnitOfWork unitOfWork, 
-            IMapper mapper, 
-            ILogger<ProductService> logger, 
+        public ProductService(IUnitOfWork unitOfWork,
+            IMapper mapper,
+            ILogger<ProductService> logger,
             TopSaladDbContext context,
             IStorageService storageService)
         {
@@ -63,8 +65,8 @@ namespace TopSaladSolution.Service
                     CreatedDate = DateTime.Now,
                     ModifiedDate = DateTime.Now,
                     LanguageId = 1,
-                    SeoTitle= request?.Name,
-                    SeoAlias= request?.Name
+                    SeoTitle = request?.Name,
+                    SeoAlias = request?.Name
                 };
 
                 // Save image
@@ -167,7 +169,7 @@ namespace TopSaladSolution.Service
                 query = query.Where(x => x.productTrans.Name.Contains(productPagingRequest.Keyword));
             }
 
-            if(productPagingRequest.CategoryId != null)
+            if (productPagingRequest.CategoryId != null)
             {
                 query = query.Where(x => x.category.Id == productPagingRequest.CategoryId);
             }
@@ -177,7 +179,7 @@ namespace TopSaladSolution.Service
             var results = query.Skip((productPagingRequest.PageIndex - 1) * productPagingRequest.PageSize)
                 .Take(productPagingRequest.PageSize)
                     .Select(x => new ProductViewModel()
-                     {
+                    {
                         Id = x.product.Id,
                         Name = x.productTrans.Name,
                         SubCategoryName = x.subCategoryTrans.Name,
@@ -278,14 +280,14 @@ namespace TopSaladSolution.Service
         public async Task<List<ProductCreateRequest>> ImportProduct(IFormFile formFile, CancellationToken cancellationToken)
         {
             var productList = new List<ProductCreateRequest>();
-            
+
 
             using (var stream = new MemoryStream())
             {
                 await formFile.CopyToAsync(stream, cancellationToken);
                 var data = ImportBuilder.ImportExcel(stream);
-                
-                for (var i = 0;  i < data.Rows.Count; i++) 
+
+                for (var i = 0; i < data.Rows.Count; i++)
                 {
                     productList.Add(new ProductCreateRequest
                     {
@@ -333,6 +335,58 @@ namespace TopSaladSolution.Service
         public Task<int> UpdateImage(int productId, string caption, bool isDefault)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Example Usage
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<ProductViewModel>> GetProducts()
+        {
+            var result = await _unitOfWork.ProductRepository.ExecuteListReaderAsync("SP_GetAllProduct");
+            return result.Select(x => new ProductViewModel
+            {
+                Id = x.Id
+            }).ToList();
+        }
+
+        private async Task<List<ProductViewModel>> GetProducts(int productId)
+        {
+            var param = new SqlParameter("@ProductId", productId);
+            var result = await _unitOfWork.ProductRepository.ExecuteListReaderAsync("SP_GetAllProduct @ProductId", param);
+            return result.Select(x => new ProductViewModel
+            {
+                Id = x.Id
+            }).ToList();
+        }
+
+        private async Task<ProductViewModel> GetSingleProduct()
+        {
+            var result = await _unitOfWork.ProductRepository.ExecuteSingleReaderAsync("SP_GetAllProduct @ProductId");
+            return new ProductViewModel
+            {
+                Id = result.Id
+            };
+        }
+
+        private async Task<ProductViewModel> GetSingleProduct(int productId)
+        {
+            var param = new SqlParameter("@ProductId", productId);
+            var result = await _unitOfWork.ProductRepository.ExecuteSingleReaderAsync("SP_GetAllProduct @ProductId", param);
+            return new ProductViewModel
+            {
+                Id = result.Id
+            };
+        }
+
+        private async Task<int> CreateProduct(ProductEditRequest request)
+        {
+            var parameter = new List<SqlParameter>
+            {
+                new("@ProductName", request.Name)
+            };
+            var result = await _unitOfWork.ProductRepository.ExecuteNonQueryAsync("SP_CreateProduct @ProductName", parameter);
+            return result;
         }
     }
 }

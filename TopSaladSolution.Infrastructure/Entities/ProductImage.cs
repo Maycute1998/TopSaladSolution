@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TopSaladSolution.Infrastructure.Entities
 {
@@ -11,6 +12,7 @@ namespace TopSaladSolution.Infrastructure.Entities
         public int SortOrder { get; set; }
         public long FileSize { get; set; }
         public Product Product { get; set; }
-        public IFormFile ThumbnailImage { get; set; }
+        //[NotMapped]
+        //public IFormFile ThumbnailImage { get; set; }
     }
 }

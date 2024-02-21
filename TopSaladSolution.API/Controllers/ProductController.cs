@@ -69,16 +69,8 @@ namespace TopSaladSolution.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateProduct([FromQuery] ProductEditRequest product)
         {
-            try
-            {
-                var updatedProduct = await _productService.Update(product);
-                return Ok(updatedProduct);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-
+            var updatedProduct = await _productService.Update(product);
+            return new ObjectResult(updatedProduct);
         }
 
         [HttpDelete]

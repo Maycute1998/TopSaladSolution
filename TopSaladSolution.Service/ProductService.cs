@@ -15,6 +15,8 @@ using TopSaladSolution.Offices.ImportExcel;
 using TopSaladSolution.Common.Utilities;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace TopSaladSolution.Service
 {
@@ -361,11 +363,56 @@ namespace TopSaladSolution.Service
             throw new NotImplementedException();
         }
 
-        public Task<List<ProductViewModel>> GetAllFromStoreProceduceAsync()
+        /// <summary>
+        /// Example Usage
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<ProductViewModel>> GetProducts()
         {
-            var data = _context.Products.FromSqlRaw("sp_GetAllProducts").ToList();
-            var result = _mapper.Map<List<ProductViewModel>>(data);
-            return Task.FromResult(result);
+            var result = await _unitOfWork.ProductRepository.ExecuteListReaderAsync("SP_GetAllProduct");
+            return result.Select(x => new ProductViewModel
+            {
+                Id = x.Id
+            }).ToList();
+        }
+
+        private async Task<List<ProductViewModel>> GetProducts(int productId)
+        {
+            var param = new SqlParameter("@ProductId", productId);
+            var result = await _unitOfWork.ProductRepository.ExecuteListReaderAsync("SP_GetAllProduct @ProductId", param);
+            return result.Select(x => new ProductViewModel
+            {
+                Id = x.Id
+            }).ToList();
+        }
+
+        private async Task<ProductViewModel> GetSingleProduct()
+        {
+            var result = await _unitOfWork.ProductRepository.ExecuteSingleReaderAsync("SP_GetAllProduct @ProductId");
+            return new ProductViewModel
+            {
+                Id = result.Id
+            };
+        }
+
+        private async Task<ProductViewModel> GetSingleProduct(int productId)
+        {
+            var param = new SqlParameter("@ProductId", productId);
+            var result = await _unitOfWork.ProductRepository.ExecuteSingleReaderAsync("SP_GetAllProduct @ProductId", param);
+            return new ProductViewModel
+            {
+                Id = result.Id
+            };
+        }
+
+        private async Task<int> CreateProduct(ProductEditRequest request)
+        {
+            var parameter = new List<SqlParameter>
+            {
+                new("@ProductName", request.Name)
+            };
+            var result = await _unitOfWork.ProductRepository.ExecuteNonQueryAsync("SP_CreateProduct @ProductName", parameter);
+            return result;
         }
     }
 }

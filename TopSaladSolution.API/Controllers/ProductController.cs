@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OfficeOpenXml;
-using System.Collections.Generic;
-using TopSaladSolution.Infrastructure.Entities;
-using TopSaladSolution.Interface.Services;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TopSaladSolution.Application.Interfaces;
 using TopSaladSolution.Model.PagingRequest;
 using TopSaladSolution.Model.Products;
 
@@ -52,6 +50,7 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateProduct([FromQuery]ProductCreateRequest product)
         {
             try
@@ -67,6 +66,7 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateProduct([FromQuery] ProductEditRequest product)
         {
             var updatedProduct = await _productService.Update(product);
@@ -74,6 +74,7 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteProduct(ProductSoftDeleteRequest product)
         {
             try
@@ -89,6 +90,7 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpPost("ImportProducts")]
+        [Authorize]
         public async Task<ImportResponse<List<ProductCreateRequest>>> ImportProductsFromFile(IFormFile formFile, CancellationToken cancellationToken)
         {
             if (formFile == null || formFile.Length <= 0)

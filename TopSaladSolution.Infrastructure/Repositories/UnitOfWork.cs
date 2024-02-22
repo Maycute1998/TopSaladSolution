@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using TopSaladSolution.Infrastructure.EF;
-using TopSaladSolution.Infrastructure.Entities;
 
 namespace TopSaladSolution.Infrastructure.Repositories
 {

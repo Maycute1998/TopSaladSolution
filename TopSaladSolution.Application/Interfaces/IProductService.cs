@@ -1,0 +1,25 @@
+﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TopSaladSolution.Model.PagingRequest;
+using TopSaladSolution.Model.Products;
+
+namespace TopSaladSolution.Application.Interfaces
+{
+    public interface IProductService
+    {
+        Task<object> Create(ProductCreateRequest request);
+        Task<object> Update(ProductEditRequest request);
+        Task<object> SoftDelete(ProductSoftDeleteRequest request);
+        Task<List<ProductViewModel>> GetAllAsync();
+        Task<ProductVM> GetById(int id);
+        Task<PagedResult<ProductViewModel>> GetAllPaging(ProductPagingRequest productPagingRequest);
+        Task<List<ProductCreateRequest>> ImportProduct(IFormFile formFile, CancellationToken cancellationToken);
+        Task<int> AddImages(int productId);
+        Task<int> UpdateImage(int productId, string caption, bool isDefault);
+
+    }
+}

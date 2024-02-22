@@ -7,5 +7,7 @@ namespace TopSaladSolution.Application.Interfaces.Auth
     {
         Task<RegisterResult> SignUpAsync(SignUpModel model);
         Task<TokenResult> SignInAsync(SignInModel model);
+        Task<TokenResult> RefreshTokenAsync(string refreshToken, string accessToken = null);
+        Task SignOutAsync();
     }
 }

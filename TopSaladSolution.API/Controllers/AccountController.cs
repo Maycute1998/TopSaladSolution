@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TopSaladSolution.Application.Interfaces.Auth;
 using TopSaladSolution.Application.ViewModels;
 
@@ -33,6 +34,14 @@ namespace TopSaladSolution.API.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        [Authorize]
+        [HttpDelete("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _accountService.SignOutAsync();
+            return Ok();
         }
     }
 }

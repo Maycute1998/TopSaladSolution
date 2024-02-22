@@ -15,19 +15,25 @@ namespace TopSaladSolution.Application.Implement.Auth
         private readonly UserManager<AppUser> userManager;
         private readonly RoleManager<AppRole> _roleManager;
 
-        //private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration configuration;
 
         public AuthenticationService(UserManager<AppUser> userManager,
-            //SignInManager<ApplicationUser> signInManager,
+            SignInManager<AppUser> signInManager,
             RoleManager<AppRole> roleManager,
             IConfiguration iconfiguration)
         {
             this.userManager = userManager;
-            //this.signInManager = signInManager;
+            _signInManager = signInManager;
             _roleManager = roleManager;
             this.configuration = iconfiguration;
         }
+
+        public Task<TokenResult> RefreshTokenAsync(string refreshToken, string accessToken = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<TokenResult> SignInAsync(SignInModel model)
         {
             var user = await userManager.FindByNameAsync(model.UserName);
@@ -55,6 +61,7 @@ namespace TopSaladSolution.Application.Implement.Auth
                     expires: DateTime.Now.AddHours(int.Parse(configuration["JWT:Expiry"])),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256));
+                
                 return new TokenResult
                 {
                     Status = true,
@@ -69,6 +76,12 @@ namespace TopSaladSolution.Application.Implement.Auth
                 Message = "Login Failed",
                 Token = string.Empty
             };
+        }
+
+        public async Task SignOutAsync()
+        {
+            await _signInManager.SignOutAsync();
+            
         }
 
         public async Task<RegisterResult> SignUpAsync(SignUpModel model)

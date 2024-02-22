@@ -10,15 +10,15 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TopSaladSolution.Application\TopSaladSolution.Application.csproj" />
     <ProjectReference Include="..\TopSaladSolution.AutoMapperProfile\TopSaladSolution.AutoMapperProfile.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Common\TopSaladSolution.Common.csproj" />
-    <ProjectReference Include="..\TopSaladSolution.Interface\TopSaladSolution.Interface.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Model\TopSaladSolution.Model.csproj" />
-    <ProjectReference Include="..\TopSaladSolution.Service\TopSaladSolution.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>

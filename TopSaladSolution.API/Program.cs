@@ -1,12 +1,19 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
+using TopSaladSolution.Application.Implement;
+using TopSaladSolution.Application.Implement.Auth;
+using TopSaladSolution.Application.Interfaces;
+using TopSaladSolution.Application.Interfaces.Auth;
 using TopSaladSolution.AutoMapperProfile;
 using TopSaladSolution.Common.Utilities;
 using TopSaladSolution.Infrastructure.EF;
+using TopSaladSolution.Infrastructure.Entities;
 using TopSaladSolution.Infrastructure.Repositories;
-using TopSaladSolution.Interface.Services;
-using TopSaladSolution.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 var crossDomainOrigins = "topSaladSolutionCrossDomainOrigins";
@@ -31,6 +38,30 @@ builder.Services.AddCors(o => o.AddPolicy(name: crossDomainOrigins, builder =>
 }));
 #endregion
 
+
+builder.Services.AddIdentity<AppUser, AppRole>()
+    .AddEntityFrameworkStores<TopSaladDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opt =>
+{
+    opt.SaveToken = true;
+    opt.RequireHttpsMetadata = false;
+    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters 
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
+    };
+});
+
 builder.Services.AddDbContext<DbContext, TopSaladDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TopSaladSolutionDb")));
 
@@ -38,6 +69,7 @@ builder.Services.AddDbContext<DbContext, TopSaladDbContext>(options =>
 #region Services
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IStorageService, FileStorageService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 #endregion
 
 #region Add Repository
@@ -51,7 +83,7 @@ var mappingConfig = new MapperConfiguration(mc =>
 IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
 #endregion
 var app = builder.Build();
 

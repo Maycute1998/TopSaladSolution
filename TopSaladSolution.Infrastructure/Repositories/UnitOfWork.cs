@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using TopSaladSolution.Infrastructure.EF;
 using TopSaladSolution.Infrastructure.Entities;
@@ -7,48 +8,23 @@ namespace TopSaladSolution.Infrastructure.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<Product> ProductRepository { get; }
-        //IRepository<ProductTranslation> ProductTranslationRepository { get; }
-        IProductTranslationRepository ProductTranslationRepository { get; }
+        IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
         void SaveChanges();
     }
 
-    public class UnitOfWork : IUnitOfWork
+    public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
     {
-        private TopSaladDbContext _context;
-        private IRepository<Product> productRepository;
-        private IProductTranslationRepository productTranslationRepository;
+        TContext _context { get; }
+    }
 
+    public class UnitOfWork<TContext> : IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
+    {
+        private Dictionary<Type, object> _repositories;
+        public TContext _context { get; }
 
-        public UnitOfWork(TopSaladDbContext context)
+        public UnitOfWork(TContext context)
         {
-            _context = context;
-        }
-
-        public IRepository<Product> ProductRepository
-        {
-            get
-            {
-                if (productRepository == null)
-                {
-                    productRepository = new ProductRepository(_context);
-                }
-
-                return productRepository;
-            }
-        }
-
-        public IProductTranslationRepository ProductTranslationRepository
-        {
-            get
-            {
-                if (productTranslationRepository == null)
-                {
-                    productTranslationRepository = new ProductTranslationRepository(_context);
-                }
-
-                return productTranslationRepository;
-            }
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public void Dispose()
@@ -59,6 +35,15 @@ namespace TopSaladSolution.Infrastructure.Repositories
         public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+
+        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
+        {
+            if (_repositories == null) _repositories = new Dictionary<Type, object>();
+
+            var type = typeof(TEntity);
+            if (!_repositories.ContainsKey(type)) _repositories[type] = new Repository<TEntity>(_context);
+            return (IRepository<TEntity>)_repositories[type];
         }
     }
 }

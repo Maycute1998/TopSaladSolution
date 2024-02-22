@@ -51,7 +51,7 @@ namespace TopSaladSolution.Model.Products
         public int Views { set; get; }
         public DateTime ModifiedDate { set; get; }
         public bool? IsFeatured { get; set; }
-        public string? ThumbnailImage { get; set; }
+        public string? ImagePath { get; set; }
         public ItemStatus Status { set; get; }
     }
 }

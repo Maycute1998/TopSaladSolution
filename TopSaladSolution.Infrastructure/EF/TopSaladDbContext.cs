@@ -44,7 +44,17 @@ namespace TopSaladSolution.Infrastructure.EF
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
 
             //Data seeding
-            //modelBuilder.Seed();
+            SeedRoles(modelBuilder);
+        }
+
+        private static void SeedRoles(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<AppRole>().HasData(
+                new IdentityRole { Id=Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "User", NormalizedName = "USER" },
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "StaffManager", NormalizedName = "STAFFMANAGER" },
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Staff", NormalizedName = "STAFF" }
+            );
         }
 
         public DbSet<Product> Products { get; set; }

@@ -5,7 +5,7 @@ namespace TopSaladSolution.Application.Interfaces.Auth
 {
     public interface IAuthenticationService
     {
-        Task<IdentityResult> SignUpAsync(SignUpModel model);
-        Task<string> SignInAsync(SignInModel model);
+        Task<RegisterResult> SignUpAsync(SignUpModel model);
+        Task<TokenResult> SignInAsync(SignInModel model);
     }
 }

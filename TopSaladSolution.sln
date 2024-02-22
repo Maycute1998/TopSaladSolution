@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopSaladSolution.Applicatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TopSaladSolution.Offices", "TopSaladSolution.Offices\TopSaladSolution.Offices.csproj", "{49BC3E24-1618-4CB6-B2A3-088759523357}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonLibary", "CommonLibary", "{4C0C270A-B212-4722-83D4-A2C9C9D2AFE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopSaladSolution.DataAccess.Common", "TopSaladSolution.DataAccess.Common\TopSaladSolution.DataAccess.Common.csproj", "{B61EEAE3-F7ED-43A6-B94B-6DB9FFD020F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,9 +55,16 @@ Global
 		{49BC3E24-1618-4CB6-B2A3-088759523357}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49BC3E24-1618-4CB6-B2A3-088759523357}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49BC3E24-1618-4CB6-B2A3-088759523357}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B61EEAE3-F7ED-43A6-B94B-6DB9FFD020F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B61EEAE3-F7ED-43A6-B94B-6DB9FFD020F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B61EEAE3-F7ED-43A6-B94B-6DB9FFD020F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B61EEAE3-F7ED-43A6-B94B-6DB9FFD020F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B61EEAE3-F7ED-43A6-B94B-6DB9FFD020F7} = {4C0C270A-B212-4722-83D4-A2C9C9D2AFE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1A69D38C-4EC7-4C33-BDB4-3CAEBCDB94A5}

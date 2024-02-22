@@ -1,6 +1,4 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TopSaladSolution.Application.Interfaces.Auth;
 using TopSaladSolution.Application.ViewModels;
 
@@ -16,26 +14,25 @@ namespace TopSaladSolution.API.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost]
+        [HttpPost("signup")]
         public async Task<IActionResult> SignUp(SignUpModel model)
         {
             var result = await _accountService.SignUpAsync(model);
-            if (result.Succeeded)
+            if (result.Status)
             {
-                return Ok(result.Succeeded);
+                return Ok(result);
             }
-            return Unauthorized();
+            return BadRequest(result);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(SignInModel model)
         {
             var result = await _accountService.SignInAsync(model);
-            if (string.IsNullOrEmpty(result))
-            {
-                return Unauthorized();
+            if (result.Status) {
+                return Ok(result);
             }
-            return Ok();
+            return BadRequest(result);
         }
     }
 }

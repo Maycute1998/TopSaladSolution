@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Net;
@@ -8,6 +9,7 @@ using TopSaladSolution.Application.Interfaces;
 using TopSaladSolution.Common.Constant;
 using TopSaladSolution.Common.Enums;
 using TopSaladSolution.Common.Utilities;
+using TopSaladSolution.DataAccess.Common.UnitOfWorkBase.Interfa;
 using TopSaladSolution.Infrastructure.EF;
 using TopSaladSolution.Infrastructure.Entities;
 using TopSaladSolution.Infrastructure.Repositories;
@@ -19,26 +21,25 @@ namespace TopSaladSolution.Application.Implement
 {
     public class ProductService : IProductService
     {
-        private readonly IRepository<Product> _productRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _uow;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductService> _logger;
         private TopSaladDbContext _context;
+
         private readonly IStorageService _storageService;
 
-        public ProductService(IRepository<Product> productRepository,
-            IUnitOfWork unitOfWork,
+        public ProductService(
             IMapper mapper,
             ILogger<ProductService> logger,
             TopSaladDbContext context,
-            IStorageService storageService)
+            IStorageService storageService, 
+            IUnitOfWorkPool uowPool, IConfiguration configuration)
         {
-            _productRepository = productRepository;
-            _unitOfWork = unitOfWork;
             _logger = logger;
             _mapper = mapper;
             _context = context;
             _storageService = storageService;
+            _uow = uowPool.Get(configuration["Systems:Pool:Default"]);
         }
 
         public async Task<string> SaveImage(IFormFile file)
@@ -49,10 +50,12 @@ namespace TopSaladSolution.Application.Implement
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return _storageService.GetFileUrl(fileName);
         }
+        
         public async Task<object> Create(ProductCreateRequest request)
         {
             try
             {
+                var context = _uow.GetRepository<Product>();
                 var newProduct = _mapper.Map<Product>(request);
                 newProduct.CreatedDate = DateTime.Now;
                 newProduct.ModifiedDate = DateTime.Now;
@@ -87,7 +90,8 @@ namespace TopSaladSolution.Application.Implement
                 }
 
                 newProduct.ProductTranslations.Add(productTranslation);
-                await _unitOfWork.GetRepository<Product>().Add(newProduct);
+                await context.Add(newProduct);
+                await _uow.SaveChangesAsync();
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -169,13 +173,13 @@ namespace TopSaladSolution.Application.Implement
 
         public async Task<ProductVM> GetById(int id)
         {
-            var product = await _unitOfWork.GetRepository<Product>().GetSingleAsync(x => x.Id == id, include: x => x.Include(a => a.ProductTranslations));
+            var product = await _uow.GetRepository<Product>().GetSingleAsync(x => x.Id == id, include: x => x.Include(a => a.ProductTranslations));
             return _mapper.Map<ProductVM>(product);
         }
 
         public async Task<ProductVM> GetByCategoryId(int id)
         {
-            var product = await _unitOfWork.GetRepository<Product>().GetSingleAsync(x => x.Id == id, include: x => x.Include(a => a.ProductTranslations));
+            var product = await _uow.GetRepository<Product>().GetSingleAsync(x => x.Id == id, include: x => x.Include(a => a.ProductTranslations));
             return _mapper.Map<ProductVM>(product);
         }
 
@@ -233,8 +237,10 @@ namespace TopSaladSolution.Application.Implement
         {
             try
             {
-                var product = await _context.Products.FindAsync(request.Id);
-                var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == request.Id);
+               var context = _uow.GetRepository<Product>();
+               var contextProductTrans = _uow.GetRepository<ProductTranslation>();
+               var product = await context.GetSingleAsync(x => x.Id == request.Id);
+               var productTranslation = await contextProductTrans.GetSingleAsync(x => x.ProductId == request.Id);
 
                 if (product is null || productTranslation is null)
                 {
@@ -276,7 +282,8 @@ namespace TopSaladSolution.Application.Implement
                     }
                 }
 
-                await _unitOfWork.GetRepository<Product>().Update(product);
+                context.Update(product);
+                await _uow.SaveChangesAsync();
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -301,6 +308,7 @@ namespace TopSaladSolution.Application.Implement
         {
             try
             {
+                var context = _uow.GetRepository<Product>();
                 var product = _mapper.Map<Product>(request);
                 request.Status = ItemStatus.InActive;
                 var images = _context.ProductImages.Where(i => i.ProductId == request.Id);
@@ -308,8 +316,8 @@ namespace TopSaladSolution.Application.Implement
                 {
                     await _storageService.DeleteFileAsync(image.ImagePath);
                 }
-                await _unitOfWork.GetRepository<Product>().Remove(product);
-
+                context.Delete(product);
+                await _uow.SaveChangesAsync();
                 var result = new
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -396,8 +404,8 @@ namespace TopSaladSolution.Application.Implement
         /// <returns></returns>
         private async Task<List<ProductViewModel>> GetProducts()
         {
-            var result = await _productRepository.SQLHelper().CreateNewSqlCommand()
-                .ExecuteReaderAsync<ProductViewModel>
+            var result = await _uow.SQLHelper().CreateNewSqlCommand()
+                .ExecuteListReaderAsync<ProductViewModel>
                 (
                     sProcName: "sp_GetAllProducts"
                 );
@@ -406,7 +414,7 @@ namespace TopSaladSolution.Application.Implement
 
         private object CreateSlide()
         {
-            _productRepository.SQLHelper().CreateNewSqlCommand()
+            _uow.SQLHelper().CreateNewSqlCommand()
                 .AddParameter("P_Name", "Test 1")
                 .AddParameter("P_Description", "Test 1")
                 .AddParameter("P_Url", "Test 1")

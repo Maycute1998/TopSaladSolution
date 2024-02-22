@@ -6,12 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.4" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TopSaladSolution.Common\TopSaladSolution.Common.csproj" />
+    <ProjectReference Include="..\TopSaladSolution.DataAccess.Common\TopSaladSolution.DataAccess.Common.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Infrastructure\TopSaladSolution.Infrastructure.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Offices\TopSaladSolution.Offices.csproj" />
   </ItemGroup>

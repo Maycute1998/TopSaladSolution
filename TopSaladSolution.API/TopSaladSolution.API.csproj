@@ -11,6 +11,7 @@
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
@@ -18,6 +19,7 @@
     <ProjectReference Include="..\TopSaladSolution.Application\TopSaladSolution.Application.csproj" />
     <ProjectReference Include="..\TopSaladSolution.AutoMapperProfile\TopSaladSolution.AutoMapperProfile.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Common\TopSaladSolution.Common.csproj" />
+    <ProjectReference Include="..\TopSaladSolution.DataAccess.Common\TopSaladSolution.DataAccess.Common.csproj" />
     <ProjectReference Include="..\TopSaladSolution.Model\TopSaladSolution.Model.csproj" />
   </ItemGroup>
 

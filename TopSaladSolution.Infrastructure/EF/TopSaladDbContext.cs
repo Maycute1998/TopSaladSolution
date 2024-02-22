@@ -49,12 +49,38 @@ namespace TopSaladSolution.Infrastructure.EF
 
         private static void SeedRoles(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AppRole>().HasData(
-                new IdentityRole { Id=Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "User", NormalizedName = "USER" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "StaffManager", NormalizedName = "STAFFMANAGER" },
-                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Staff", NormalizedName = "STAFF" }
-            );
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = Guid.NewGuid(),
+                Name = "admin",
+                NormalizedName = "ADMIN",
+                Description = "TopSalad Admin"
+            }, new AppRole
+            {
+                Id = Guid.NewGuid(),
+                Name = "User",
+                NormalizedName = "USER",
+                Description = "TopSalad User"
+            }, new AppRole
+            {
+                Id = Guid.NewGuid(),
+                Name = "StaffManager",
+                NormalizedName = "STAFFMANAGER",
+                Description = "TopSalad Staff Manager"
+            }, new AppRole
+            {
+                Id = Guid.NewGuid(),
+                Name = "Staff",
+                NormalizedName = "STAFF",
+                Description = "TopSalad Staff"
+            });
+
+            //modelBuilder.Entity<AppRole>().HasData(
+            //    new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Admin", NormalizedName = "ADMIN" },
+            //    new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "User", NormalizedName = "USER" },
+            //    new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "StaffManager", NormalizedName = "STAFFMANAGER" },
+            //    new IdentityRole { Id = Guid.NewGuid().ToString(), Name = "Staff", NormalizedName = "STAFF" }
+            //);
         }
 
         public DbSet<Product> Products { get; set; }

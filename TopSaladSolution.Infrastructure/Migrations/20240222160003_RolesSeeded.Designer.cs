@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TopSaladSolution.Infrastructure.EF;
 
@@ -11,9 +12,10 @@ using TopSaladSolution.Infrastructure.EF;
 namespace TopSaladSolution.Infrastructure.Migrations
 {
     [DbContext(typeof(TopSaladDbContext))]
-    partial class TopSaladDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240222160003_RolesSeeded")]
+    partial class RolesSeeded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TopSaladSolution.Application.Interfaces;
 using TopSaladSolution.Model.PagingRequest;
@@ -43,6 +44,7 @@ namespace TopSaladSolution.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetById(int id)
         {
             var book = await _productService.GetById(id);
